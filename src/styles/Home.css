@@ -1,0 +1,65 @@
+/* Full page layout setup */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* Hero section background */
+.home-hero {
+  background-image: url("https://ollya.codexcoder.com/assets/images/bg-img/pageheader.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  position: relative;
+
+}
+
+/* Pink overlay */
+.overlay {
+  background-color: rgba(255, 192, 203, 0.4); /* soft pink overlay */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hero text styling */
+.hero-content {
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Text color override */
+.fw-bold,
+.lead {
+  color: black;
+}
+
+/* Optional: Floating heart animation */
+.heart {
+  position: absolute;
+  animation: floatUp 5s ease-in infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    bottom: 0;
+    opacity: 1;
+  }
+  100% {
+    bottom: 100%;
+    opacity: 0;
+  }
+}
