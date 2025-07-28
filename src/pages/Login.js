@@ -28,7 +28,7 @@ function Login() {
           <label className="form-label">Password</label>
           <input type="password" name="password" className="form-control" required value={form.password} onChange={handleChange} />
         </div>
-        <button type="submit" className="btn btn-success w-100">Login</button>
+        <button type="submit" className="btn btn-success w-100" style={{ backgroundColor: "#ff1540ff", borderColor: "#ff69b4" }}>Login</button>
       </form>
     </div>
   );

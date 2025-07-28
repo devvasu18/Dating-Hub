@@ -32,7 +32,7 @@ function Signup() {
           <label className="form-label">Password</label>
           <input type="password" name="password" className="form-control" required value={form.password} onChange={handleChange} />
         </div>
-        <button type="submit" className="btn btn-primary w-100">Sign Up</button>
+        <button type="submit" className="btn btn-primary w-100" style={{ backgroundColor: "#ff1540ff", borderColor: "#ff69b4" }} >Sign Up</button>
       </form>
     </div>
   );

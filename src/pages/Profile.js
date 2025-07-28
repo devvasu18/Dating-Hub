@@ -77,7 +77,7 @@ function Profile() {
           <input type="text" name="interests" className="form-control" value={profile.interests} onChange={handleChange} />
         </div>
 
-        <button type="submit" className="btn btn-success w-100">Save Profile</button>
+        <button type="submit" className="btn btn-success w-100" style={{ backgroundColor: "#ff1540ff", borderColor: "#ff69b4" }}>Save Profile</button>
       </form>
     </div>
   );

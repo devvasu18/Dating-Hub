@@ -21,6 +21,7 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+   background-color: rgba(255, 192, 203, 0.603);
 }
 
 .main-content {
