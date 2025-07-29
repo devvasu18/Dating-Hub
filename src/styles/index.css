@@ -27,3 +27,19 @@ html, body, #root {
 .main-content {
   flex: 1;
 }
+.user-img {
+  height: 350px;
+  object-fit: cover;
+  width: 100%;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+.bio-preview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* limit to 3 lines */
+  -webkit-box-orient: vertical;
+  max-height: 4.5em; /* fallback for browsers not supporting line-clamp */
+}
+

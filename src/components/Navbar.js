@@ -45,9 +45,12 @@ function Navbar() {
         {/* Collapsible navigation */}
         <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul className="navbar-nav d-flex flex-row flex-wrap justify-content-end mb-0">
-            <li className="nav-item mx-2">
-              <NavLink className="nav-link text-white" to="/" style={({ isActive }) => isActive ? activeStyle : undefined}>Home</NavLink>
-            </li>
+            {!isLoggedIn && (
+  <li className="nav-item mx-2">
+    <NavLink className="nav-link text-white" to="/" style={({ isActive }) => isActive ? activeStyle : undefined}>Home</NavLink>
+  </li>
+)}
+
             <li className="nav-item mx-2">
               <NavLink className="nav-link text-white" to="/discover" style={({ isActive }) => isActive ? activeStyle : undefined}>Discover</NavLink>
             </li>
