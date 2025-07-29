@@ -44,3 +44,8 @@
     border-radius: 5px;
   }
 }
+
+.container-fluid {
+  flex-wrap: nowrap !important;
+  display: flex;
+}

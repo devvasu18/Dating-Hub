@@ -5,7 +5,17 @@ function Footer() {
   return (
     <footer className="footer bg-pink text-white pt-4">
       <div className="container text-center">
-        <h5 className="fw-bold mb-3">💖 DateHub — Where Love Begins</h5>
+        <div className="datehub-logo mb-3">
+          <img
+            className="footerimg"
+            src="/ChatGPT Image Jul 29, 2025, 01_50_54 pM.png"
+            alt="DateHub"
+            height="40"
+            width={80}
+          />
+          <h5 className="fw-bold mb-3">
+          — Where Love Begins</h5>
+        </div> 
         <p>Connecting hearts since 2025. Let’s build something special together!</p>
 
        <div className="social-icons my-3">

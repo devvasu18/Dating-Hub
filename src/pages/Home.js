@@ -12,7 +12,7 @@ function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          <h1 className="display-4 fw-bold">💘DateHub</h1>
+          <h1 className="display-4 fw-bold">  DateHub</h1>
           <p className="lead">
             Find your perfect match and start something beautiful today.
           </p>

@@ -18,7 +18,7 @@ html, body, #root {
 /* Hero section background */
 .home-hero {
   background-image: url("https://ollya.codexcoder.com/assets/images/bg-img/pageheader.jpg");
-  background-size: cover;
+
   background-position: center;
   height: 100vh;
   position: relative;

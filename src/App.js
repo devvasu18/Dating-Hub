@@ -11,6 +11,9 @@ import UserProfile from "./pages/UserProfile";
 import Chat from "./pages/Chat";
 import EditProfile from "./pages/EditProfile";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+
 function App() {
   return (
     <div className="app-wrapper">
@@ -21,12 +24,24 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/discover" element={<Discover />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/match" element={<Match />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/profile/:id" element={<UserProfile />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/discover" element={<ProtectedRoute>
+      <Discover />
+    </ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>} />
+        <Route path="/match" element={<ProtectedRoute>
+      <Match />
+    </ProtectedRoute>} />
+        <Route path="/chat" element={<ProtectedRoute>
+      <Chat />
+    </ProtectedRoute>} />
+        <Route path="/profile/:id" element={<ProtectedRoute>
+      <UserProfile />
+    </ProtectedRoute>} />
+        <Route path="/edit-profile" element={<ProtectedRoute>
+      <EditProfile />
+    </ProtectedRoute>} />
       </Routes>
         </div>
         <Footer />
