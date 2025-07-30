@@ -24,7 +24,6 @@ function Navbar() {
   const activeStyle = {
     fontWeight: "bold",
     color: "#c90b2e",
-    backgroundColor: "rgba(255, 255, 255, 0.13)",
   };
 
   return (
@@ -55,7 +54,7 @@ function Navbar() {
               <NavLink className="nav-link text-white" to="/discover" style={({ isActive }) => isActive ? activeStyle : undefined}>Discover</NavLink>
             </li>
             <li className="nav-item mx-2">
-              <NavLink className="nav-link text-white" to="/match" style={({ isActive }) => isActive ? activeStyle : undefined}>Matches</NavLink>
+              <NavLink className="nav-link text-white" to="/match" style={({ isActive }) => isActive ? activeStyle : undefined}>Liked</NavLink>
             </li>
             <li className="nav-item mx-2">
               <NavLink className="nav-link text-white" to="/profile" style={({ isActive }) => isActive ? activeStyle : undefined}>Profile</NavLink>

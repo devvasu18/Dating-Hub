@@ -12,7 +12,7 @@ import Chat from "./pages/Chat";
 import EditProfile from "./pages/EditProfile";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -24,9 +24,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/discover" element={<ProtectedRoute>
-      <Discover />
-    </ProtectedRoute>} />
+        <Route path="/discover" element={<Discover />} />
+        <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/profile" element={<ProtectedRoute>
       <Profile />
     </ProtectedRoute>} />
@@ -42,6 +41,8 @@ function App() {
         <Route path="/edit-profile" element={<ProtectedRoute>
       <EditProfile />
     </ProtectedRoute>} />
+
+
       </Routes>
         </div>
         <Footer />
