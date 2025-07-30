@@ -79,25 +79,6 @@ function Home() {
   return (
     <div className="home-hero">
       <div className="overlay">
-        {/* Heading */}
-        <motion.div
-          className="text-center text-white hero-content"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <h1 className="display-4 fw-bold text-dark">DateHub</h1>
-          <p className="lead text-dark">
-            Find your perfect match and start something beautiful today.
-          </p>
-          <motion.a
-            href="/signup"
-            whileHover={{ scale: 1.1 }}
-            className="btn btn-lg btn-danger mt-3 px-4"
-          >
-            Get Started
-          </motion.a>
-        </motion.div>
 
         {/* User Circles */}
         <motion.div
@@ -142,6 +123,49 @@ function Home() {
             </motion.div>
           ))}
         </motion.div>
+                {/* Heading */}
+        <motion.div
+          className="text-center text-white hero-content"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <h1 className="display-4 fw-bold text-dark">DateHub</h1>
+          <p className="lead text-dark">
+            Find your perfect match and start something beautiful today.
+          </p>
+          <motion.a
+            href="/signup"
+            whileHover={{ scale: 1.1 }}
+            className="btn btn-lg btn-danger mt-3 px-4"
+          >
+            Get Started
+          </motion.a>
+        </motion.div>
+       
+
+{/* Feature Infographics Section */}
+{/* Feature Infographics Section */}
+<div className="feature-wrapper container mt-5 mb-5">
+  <div className="row justify-content-center">
+    <div className="col-12 col-md-6 d-flex justify-content-center mb-4">
+      <img
+        src="/ChatGPT Image Jul 30, 2025, 04_30_45 pM.png"
+        alt="Why Choose Us 1"
+        className="feature-img"
+      />
+    </div>
+    <div className="col-12 col-md-6 d-flex justify-content-center mb-4">
+      <img
+        src="/ChatGPT Image Jul 30, 2025, 05_40_27 pM.png"
+        alt="Why Choose Us 2"
+        className="feature-img"
+      />
+    </div>
+  </div>
+</div>
+
+
       
       </div>
 
