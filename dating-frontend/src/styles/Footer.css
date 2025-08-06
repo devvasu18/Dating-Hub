@@ -1,0 +1,23 @@
+.footer {
+    margin-top: 10px;
+  background-color: #fa4768fb; /* love pink */
+  padding: 10px 0;
+  font-family: 'Segoe UI', sans-serif;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+}
+
+.footer .social-icons a {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.footer .social-icons a:hover {
+  transform: scale(1.2);
+  color: #fff;
+}
+
+.datehub-logo {
+  display: inline-flex;
+  align-items: center;
+}

@@ -1,0 +1,51 @@
+/* General style */
+.navbar-nav .nav-link {
+  color: white !important;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ff1540!important;
+}
+
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Responsive nav keeps in 1 line, scroll if needed */
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+  }
+
+  .navbar-nav::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in Chrome/Safari */
+  }
+
+  .nav-item {
+    flex-shrink: 0;
+  }
+
+  .nav-link {
+    padding: 0.5rem 0.75rem;
+    white-space: nowrap;
+  }
+
+  .join-now-btn {
+    background-color: #ff1540;
+    border-radius: 5px;
+  }
+}
+
+.container-fluid {
+  flex-wrap: nowrap !important;
+  display: flex;
+}
