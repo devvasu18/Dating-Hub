@@ -1,0 +1,6 @@
+# Ignore backend node_modules
+dating-backend/node_modules/
+
+# Ignore environment and logs
+*.log
+.env
