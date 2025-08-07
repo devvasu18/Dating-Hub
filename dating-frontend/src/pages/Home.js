@@ -138,7 +138,7 @@ function Home() {
             Find your perfect match and start something beautiful today.
           </p>
           <motion.a
-            href="/signup"
+            href="/discover"
             whileHover={{ scale: 1.1 }}
             className="btn btn-lg btn-danger mt-3 px-4"
           >

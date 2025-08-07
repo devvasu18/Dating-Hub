@@ -1,36 +1,40 @@
-import express from 'express';
-import Message from '../models/Message.js';
+// routes/messages.js (ESM version)
+import express from "express";
+import Message from "../models/Message.js";
 
 const router = express.Router();
 
-// Save a new message
+// ✅ Save a new message
 router.post("/", async (req, res) => {
-  const { sender, receiver, message } = req.body;
   try {
-    const msg = new Message({ sender, receiver, message });
-    await msg.save();
-    res.status(201).json(msg);
+    const { senderId, receiverId, text } = req.body;
+
+    const newMessage = new Message({ senderId, receiverId, text });
+    await newMessage.save();
+
+    res.status(201).json(newMessage);
   } catch (err) {
+    console.error("Error saving message:", err);
     res.status(500).json({ error: "Failed to save message" });
   }
 });
 
-// Get chat history between two users
-router.get("/history/:user1/:user2", async (req, res) => {
-  const { user1, user2 } = req.params;
-
+// ✅ Get messages between 2 users
+router.get("/:userId/:otherUserId", async (req, res) => {
+  const { userId, otherUserId } = req.params;
   try {
     const messages = await Message.find({
       $or: [
-        { sender: user1, receiver: user2 },
-        { sender: user2, receiver: user1 }
+        { senderId: userId, receiverId: otherUserId },
+        { senderId: otherUserId, receiverId: userId }
       ]
-    }).sort({ createdAt: 1 }); // oldest to newest
+    }).sort({ timestamp: 1 });
 
     res.json(messages);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching chat history" });
+    res.status(500).json({ error: "Something went wrong" });
   }
 });
 
 export default router;
+

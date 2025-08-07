@@ -10,6 +10,7 @@ import mongoose from 'mongoose';
 import messageRoutes from './routes/messageRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import matchRoutes from './routes/matchRoutes.js';
+import fixuser from "./routes/fix-user.js";
 import Message from './models/Message.js';
 import authRoutes from './routes/authRoutes.js'; 
 import userRoutes from './routes/userRoutes.js';
@@ -33,6 +34,8 @@ app.use('/api/match', matchRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/auth', authRoutes);
 app.use("/api/users", userRoutes);
+app.use('/api', userRoutes);
+app.use("/api/admin", fixuser);
 
 // Track connected users
 const onlineUsers = new Map();
@@ -50,6 +53,7 @@ io.on('connection', (socket) => {
   // Handle message sending
   socket.on('send-msg', async (data) => {
     const { senderId, receiverId, message } = data;
+      console.error("Error saving message:", err);
 
     // Save to DB
     await Message.create({

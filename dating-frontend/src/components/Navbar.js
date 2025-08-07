@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import React from "react";
+// import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../styles/Navbar.css";
-import { isLoggedIn } from "../utils/auth";
+// import { isLoggedIn } from "../utils/auth";
 
 function Navbar() {
+  /*
   const [loggedIn, setLoggedIn] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ function Navbar() {
     fontWeight: "bold",
     color: "#c90b2e",
   };
+  */
 
   return (
     <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#fa4768fb" }}>
@@ -39,6 +41,7 @@ function Navbar() {
         </div>
 
         <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+          {/*
           <ul className="navbar-nav d-flex flex-row flex-wrap justify-content-end mb-0">
             {!loggedIn && (
               <li className="nav-item mx-2">
@@ -85,6 +88,7 @@ function Navbar() {
               </li>
             )}
           </ul>
+          */}
         </div>
 
         <button

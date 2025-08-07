@@ -1,55 +1,81 @@
-import React, { useEffect, useState } from "react";
-import socket from "../socket"; // path to your socket.js
+import React, { useState, useEffect } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import io from "socket.io-client";
+import axios from "axios";
 
-function Chat({ currentUserId, receiverUserId }) {
-  const [message, setMessage] = useState("");
+const socket = io("http://localhost:5000"); // Replace with your backend URL
+
+function Chat() {
+  const { userId } = useParams();
+  const { state } = useLocation();
+  const currentUser = JSON.parse(localStorage.getItem("user")); // logged in user
+  const otherUser = state?.user;
+
   const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
 
-  // 1. Identify user when component mounts
   useEffect(() => {
-    socket.emit("add-user", currentUserId);
-  }, [currentUserId]);
+    // Fetch previous messages
+    axios.get(`http://localhost:5000/api/messages/${currentUser.id}/${userId}`)
 
-  // 2. Listen for incoming messages
+      .then(res => setMessages(res.data))
+      .catch(err => console.error(err));
+  }, [userId]);
+
   useEffect(() => {
-    socket.on("msg-receive", (data) => {
-      console.log("📥 Message received:", data);
-      setMessages((prev) => [...prev, data]);
+    // Join room and listen for new messages
+    socket.emit("joinRoom", { senderId: currentUser.id, receiverId: userId });
+
+    socket.on("newMessage", (message) => {
+      setMessages(prev => [...prev, message]);
     });
 
     return () => {
-      socket.off("msg-receive");
+      socket.off("newMessage");
     };
-  }, []);
+  }, [userId]);
 
-  // 3. Send message
-  const handleSend = () => {
-    const newMsg = {
-      senderId: currentUserId,
-      receiverId: receiverUserId,
-      message: message,
+  const sendMessage = async () => {
+    if (input.trim() === "") return;
+
+    const messageData = {
+      senderId: currentUser.id,
+      receiverId: userId,
+      text: input,
     };
 
-    socket.emit("send-msg", newMsg);
-    setMessages((prev) => [...prev, { from: currentUserId, message }]);
-    setMessage("");
+    socket.emit("sendMessage", messageData);
+    setMessages([...messages, messageData]);
+
+   await axios.post("http://localhost:5000/api/messages", messageData);
+
+    setInput("");
   };
 
   return (
-    <div>
-      <div>
+    <div className="container mt-5">
+      <h4>{otherUser?.name}~</h4>
+      <div className="chat-box border p-3 mb-3" style={{ maxHeight: 400, overflowY: "auto" }}>
         {messages.map((msg, index) => (
-          <p key={index}>
-            <b>{msg.from === currentUserId ? "You" : "Them"}:</b> {msg.message}
-          </p>
+          <div key={index} className={`text-${msg.senderId === currentUser.id ? "end" : "start"}`}>
+            <span className={`badge ${msg.senderId === currentUser.id ? "bg-success" : "bg-secondary"}`}>
+              {msg.text}
+            </span>
+          </div>
         ))}
       </div>
-      <input
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type your message..."
-      />
-      <button onClick={handleSend}>Send</button>
+      <div className="d-flex">
+        <input
+          type="text"
+          className="form-control me-2"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type a message"
+        />
+        <button className="btn btn-primary" onClick={sendMessage}>
+          Send
+        </button>
+      </div>
     </div>
   );
 }

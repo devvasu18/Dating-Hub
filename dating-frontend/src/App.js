@@ -8,12 +8,13 @@ import Discover from "./pages/Discover";
 import Profile from "./pages/Profile";
 import Match from "./pages/Match";
 import UserProfile from "./pages/UserProfile";
-import Chat from "./pages/Chat";
+import Chat from "./components/Chat";
 import EditProfile from "./pages/EditProfile";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProfilePage from "./pages/ProfilePage";
 import PopupModal from "./components/PopupModal";
+import FixUsers from "./components/FixUsers";
 // ✅ New Imports
 import socket from "./socket"; // path to your socket.js file
 import { toast } from "react-toastify"; 
@@ -48,7 +49,7 @@ function App() {
             <Route path="/match" element={
               <ProtectedRoute><Match /></ProtectedRoute>
             } />
-            <Route path="/chat" element={
+            <Route path="/chat/:userId" element={
               <ProtectedRoute><Chat /></ProtectedRoute>
             } />
             <Route path="/profile/:id" element={
@@ -57,7 +58,10 @@ function App() {
             <Route path="/edit-profile" element={
               <ProtectedRoute><EditProfile /></ProtectedRoute>
             } />
+            <Route path="/fixuser" element={<FixUsers />} />
+
           </Routes>
+          
         </div>
         <Footer />
       </Router>

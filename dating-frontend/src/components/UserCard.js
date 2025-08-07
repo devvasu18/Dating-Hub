@@ -1,28 +1,34 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function UserCard({ user, onLike, onPass }) {
+function UserCard({ user }) {
+  const navigate = useNavigate();
+
+  const handleChat = () => {
+    navigate(`/chat/${user.id}`, { state: { user } });
+  };
+
   return (
-    <div className="card shadow-sm text-center h-100" style={{ width: "100%", maxWidth: "300px", minHeight: "430px", maxHeight: "450px" }}>
-      <img
-        src={user.image}
-        className="card-img-top user-img"
-        alt={user.name}
-        style={{ height: "250px", objectFit: "cover" }}
-      />
-      <div className="card-body d-flex flex-column justify-content-between">
-        <div>
-          <h5 className="card-title">{user.name}, {user.age}</h5>
-          <p className="card-text bio-preview">{user.bio}</p>
-
-        </div>
-        <div className="d-flex justify-content-center gap-3 mt-3">
-          <button className="btn btn-outline-danger" onClick={() => onPass(user.name)}>Pass</button>
-          <button className="btn btn-outline-success" onClick={() => onLike(user.name)}>Like</button>
-        </div>
+    <div className="card p-3">
+      <img src={user.image} alt={user.name} className="card-img-top" />
+      <h5 className="mt-2">{user.name}, {user.age}</h5>
+      <p>{user.bio}</p>
+      <div className="d-flex justify-content-center gap-3 mt-3">
+        <button
+          className="btn"
+          style={{ backgroundColor: "#fa4768fd", color: "#fff" }}
+          onClick={handleChat}
+        >
+          Chat
+        </button>
+        <button
+          className="btn"
+          style={{ backgroundColor: "#c90b2e", color: "#fff" }}
+          onClick={() => navigate(`/profile/${user.id}`)}
+          >Profile</button>
       </div>
     </div>
   );
 }
-
 
 export default UserCard;

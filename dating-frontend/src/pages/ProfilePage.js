@@ -27,7 +27,7 @@ function ProfilePage() {
       <h2>{user.name}</h2>
       {user.age && <p>Age: {user.age}</p>}
       <p className="text-muted">{user.bio || "No bio provided."}</p>
-      <p>Status: {user.status || "login for more info"} <a href="/login">Login</a></p>
+    
     </div>
   );
 }
