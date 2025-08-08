@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import UserCard from "../components/UserCard";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Toast, ToastContainer } from 'react-bootstrap';
@@ -6,31 +7,49 @@ import { motion } from "framer-motion";
 import axios from "axios";
 
 function Discover() {
-  const [toastMessage, setToastMessage] = useState("");
+  const navigate = useNavigate();
+  const [toastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [users, setUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [batchSize, setBatchSize] = useState(6);
 
-  // Fetch users from backend
+  // ✅ Setup guest ID if missing
   useEffect(() => {
-    axios.get("http://localhost:5000/api/users")
+    let guestId = localStorage.getItem("guestId");
+    let guestName = localStorage.getItem("guestName");
+
+    if (!guestId || !guestName) {
+      const newGuest = {
+        id: "guest_" + Date.now(),
+        name: "Guest_" + Math.floor(Math.random() * 1000),
+      };
+      localStorage.setItem("guestId", newGuest.id);
+      localStorage.setItem("guestName", newGuest.name);
+    }
+  }, []);
+
+  // ✅ Fetch discover users
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/users/discover")
       .then((res) => {
         const usersWithFallbacks = res.data.map((user) => ({
           ...user,
           _id: user._id || "user_" + Math.random().toString(36).substring(2, 10),
-          images: user.images?.length ? user.images : ["https://via.placeholder.com/300"],
+          images: user.images?.length ? user.images : ["https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg"],
         }));
         setUsers(usersWithFallbacks);
       })
-      .catch((err) => console.error("Error fetching users:", err));
+      .catch((err) => {
+        console.error("❌ Error fetching users:", err);
+        setUsers([]);
+      });
   }, []);
 
-  // Adjust batch size on screen resize
+  // ✅ Handle batch size for responsive UI
   useEffect(() => {
     const handleResize = () => {
-      const width = window.innerWidth;
-      setBatchSize(width < 768 ? 4 : 6);
+      setBatchSize(window.innerWidth < 768 ? 4 : 6);
     };
 
     handleResize();
@@ -38,15 +57,16 @@ function Discover() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Slice users based on screen size
+  // ✅ Display users based on batch
   useEffect(() => {
     setDisplayedUsers(users.slice(0, batchSize));
   }, [users, batchSize]);
-// eslint-disable-next-line
-  const showActionToast = (message) => {
-    setToastMessage(message);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2500);
+
+  // ✅ Navigate to chat
+  const handleChat = (targetUser) => {
+    navigate(`/chat/${targetUser._id}`, {
+      state: { user: targetUser },
+    });
   };
 
   return (
@@ -66,7 +86,7 @@ function Discover() {
             >
               <UserCard
                 user={user}
-                onChat={() => console.log("Chat with", user.name)}
+                onChat={() => handleChat(user)}
                 onViewProfile={() => console.log("Viewing profile of", user.name)}
               />
             </motion.div>

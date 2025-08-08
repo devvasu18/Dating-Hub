@@ -8,7 +8,7 @@ import Discover from "./pages/Discover";
 import Profile from "./pages/Profile";
 import Match from "./pages/Match";
 import UserProfile from "./pages/UserProfile";
-import Chat from "./components/Chat";
+import ChatPage from "./pages/ChatPage";
 import EditProfile from "./pages/EditProfile";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -49,9 +49,8 @@ function App() {
             <Route path="/match" element={
               <ProtectedRoute><Match /></ProtectedRoute>
             } />
-            <Route path="/chat/:userId" element={
-              <ProtectedRoute><Chat /></ProtectedRoute>
-            } />
+           <Route path="/chat/:receiverId" element={<ChatPage />} />
+
             <Route path="/profile/:id" element={
               <ProtectedRoute><UserProfile /></ProtectedRoute>
             } />

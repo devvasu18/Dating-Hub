@@ -1,30 +1,29 @@
-const Message = require('../models/Message');
+import Message from '../models/Message.js';
 
-exports.sendMessage = async (req, res) => {
-  const { receiverId, content } = req.body;
+export const getMessages = async (req, res) => {
   try {
-    const message = await Message.create({
-      sender: req.user._id,
-      receiver: receiverId,
-      content
-    });
-    res.status(201).json(message);
+    const { userId1, userId2 } = req.params;
+
+    const messages = await Message.find({
+      $or: [
+        { sender: userId1, receiver: userId2 },
+        { sender: userId2, receiver: userId1 },
+      ],
+    }).sort("time");
+
+    res.json(messages);
   } catch (err) {
-    res.status(500).json({ message: 'Error sending message' });
+    console.error("Error fetching messages:", err);
+    res.status(500).json({ error: "Error fetching messages" });
   }
 };
 
-exports.getMessages = async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const messages = await Message.find({
-      $or: [
-        { sender: req.user._id, receiver: userId },
-        { sender: userId, receiver: req.user._id }
-      ]
-    }).sort({ timestamp: 1 });
-    res.json(messages);
+export const sendMessage = async (req, res) => {
+ try {
+    const message = new Message(req.body);
+    await message.save();
+    res.status(201).json(message);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching messages' });
+    res.status(500).json({ error: "Message failed" });
   }
 };

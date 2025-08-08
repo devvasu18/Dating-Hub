@@ -1,13 +1,12 @@
 // models/Message.js
 import mongoose from "mongoose";
 
-const messageSchema = new mongoose.Schema({
-  senderId: { type: String, required: true },
-  receiverId: { type: String, required: true },
-  text: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now },
+const MessageSchema = new mongoose.Schema({
+  sender: String,
+  receiver: String,
+  text: String,
+  time: Date,
 });
 
-// ✅ Export properly for ESM
-const Message = mongoose.model("Message", messageSchema);
+const Message = mongoose.model("Message", MessageSchema);
 export default Message;

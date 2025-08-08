@@ -1,12 +1,13 @@
 import User from '../models/User.js';
 
 export const discoverUsers = async (req, res) => {
-  const { gender } = req.query;
   try {
-    const users = await User.find({ gender: { $ne: req.user.gender } }).select('-password');
+    const currentUserId = req.user?._id;
+    const users = await User.find(currentUserId ? { _id: { $ne: currentUserId } } : {})
+                            .select("-password");
     res.json(users);
-  } catch {
-    res.status(500).json({ message: 'Error fetching users' });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch users", error });
   }
 };
 export const likeUser = async (req, res) => {

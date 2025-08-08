@@ -1,5 +1,4 @@
 // app.js (ESM version)
-
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -14,14 +13,16 @@ import fixuser from "./routes/fix-user.js";
 import Message from './models/Message.js';
 import authRoutes from './routes/authRoutes.js'; 
 import userRoutes from './routes/userRoutes.js';
+
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
-  },
+    origin: "http://localhost:3000", // frontend URL
+    methods: ["GET", "POST"]
+  }
 });
 
 // Middleware
@@ -44,37 +45,36 @@ const onlineUsers = new Map();
 io.on('connection', (socket) => {
   console.log('🔌 New connection:', socket.id);
 
-  // Save userId and socketId
   socket.on('add-user', (userId) => {
     onlineUsers.set(userId, socket.id);
     console.log('✅ User online:', userId);
   });
 
-  // Handle message sending
   socket.on('send-msg', async (data) => {
     const { senderId, receiverId, message } = data;
-      console.error("Error saving message:", err);
 
-    // Save to DB
-    await Message.create({
-      sender: senderId,
-      receiver: receiverId,
-      message,
-    });
-
-    // Send to receiver if online
-    const sendToSocketId = onlineUsers.get(receiverId);
-    if (sendToSocketId) {
-      io.to(sendToSocketId).emit('msg-receive', {
-        from: senderId,
+    try {
+      await Message.create({
+        sender: senderId,
+        receiver: receiverId,
         message,
       });
+
+      const sendToSocketId = onlineUsers.get(receiverId);
+      if (sendToSocketId) {
+        io.to(sendToSocketId).emit('msg-receive', {
+          from: senderId,
+          message,
+        });
+      }
+    } catch (err) {
+      console.error("Error saving message:", err);
     }
   });
 
   socket.on('disconnect', () => {
     console.log('❌ User disconnected:', socket.id);
-    // Optionally remove from onlineUsers
+    // Optionally remove from onlineUsers if needed
   });
 });
 
