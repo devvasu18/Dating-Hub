@@ -42,36 +42,4 @@ console.log("Liked User ID:", req.params.userId);
   }
 };
 
-export const getLikedUsers = async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).populate("likedUsers", "name bio image");
-    res.json(user.likedUsers);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch liked users" });
-  }
-};
-export const unmatchUser = async (req, res) => {
-  const { userId } = req.params;
 
-  try {
-    const user = await User.findById(req.user._id);
-    const targetUser = await User.findById(userId);
-
-    if (!user || !targetUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Remove from likedUsers and matches
-    user.likedUsers = user.likedUsers.filter((id) => id.toString() !== userId);
-    user.matches = user.matches.filter((id) => id.toString() !== userId);
-
-    targetUser.matches = targetUser.matches.filter((id) => id.toString() !== user._id.toString());
-
-    await user.save();
-    await targetUser.save();
-
-    res.json({ message: "User unmatched" });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to unmatch user" });
-  }
-};

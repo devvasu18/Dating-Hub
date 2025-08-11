@@ -6,6 +6,7 @@ import { Toast, ToastContainer } from 'react-bootstrap';
 import { motion } from "framer-motion";
 import axios from "axios";
 
+
 function Discover() {
   const navigate = useNavigate();
   const [toastMessage] = useState("");
@@ -14,8 +15,12 @@ function Discover() {
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [batchSize, setBatchSize] = useState(6);
 
-  // ✅ Setup guest ID if missing
-  useEffect(() => {
+ useEffect(() => {
+  // Check if a logged-in user exists
+  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+
+  if (!loggedInUser) {
+    // No logged-in user, so create guest ID if not present
     let guestId = localStorage.getItem("guestId");
     let guestName = localStorage.getItem("guestName");
 
@@ -26,25 +31,25 @@ function Discover() {
       };
       localStorage.setItem("guestId", newGuest.id);
       localStorage.setItem("guestName", newGuest.name);
+      guestId = newGuest.id;
+      guestName = newGuest.name;
     }
-  }, []);
+  }
+  
+  axios.get("http://localhost:5000/api/users")
+    .then((res) => {
+      const usersWithFallbacks = res.data.map((user) => ({
+        ...user,
+        _id: user._id || "user_" + Math.random().toString(36).substring(2, 10),
+        images: user.images?.length
+          ? user.images
+          : ["https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg"],
+      }));
+      setUsers(usersWithFallbacks);
+    })
+    .catch((err) => console.error("Error fetching users:", err));
+}, []);
 
-  // ✅ Fetch discover users
-  useEffect(() => {
-    axios.get("http://localhost:5000/api/users/discover")
-      .then((res) => {
-        const usersWithFallbacks = res.data.map((user) => ({
-          ...user,
-          _id: user._id || "user_" + Math.random().toString(36).substring(2, 10),
-          images: user.images?.length ? user.images : ["https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg"],
-        }));
-        setUsers(usersWithFallbacks);
-      })
-      .catch((err) => {
-        console.error("❌ Error fetching users:", err);
-        setUsers([]);
-      });
-  }, []);
 
   // ✅ Handle batch size for responsive UI
   useEffect(() => {
