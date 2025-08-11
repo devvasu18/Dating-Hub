@@ -6,17 +6,14 @@ const ChatPage = () => {
   const { receiverId } = useParams(); // Get receiverId from URL
   const [receiver, setReceiver] = useState(null);
 
-  console.log("📦 ChatPage Mounted");
-  console.log("📩 receiverId from URL:", receiverId);
+
 
   useEffect(() => {
     const fetchReceiver = async () => {
-      console.log("🌐 Fetching receiver data...");
 
       try {
         const res = await fetch(`http://localhost:5000/api/users/${receiverId}`);
         const data = await res.json();
-        console.log("✅ Receiver data fetched:", data);
         setReceiver(data);
       } catch (error) {
         console.error("❌ Failed to fetch receiver:", error);
@@ -31,7 +28,6 @@ const ChatPage = () => {
   }, [receiverId]);
 
   if (!receiver) {
-    console.log("⌛ Still loading receiver...");
     return <p className="text-center mt-5">Loading chat...</p>;
   }
 

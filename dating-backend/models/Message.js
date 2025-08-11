@@ -1,12 +1,12 @@
-// models/Message.js
-import mongoose from "mongoose";
+// backend/models/Message.js
+import mongoose from 'mongoose';
 
-const messageSchema = new mongoose.Schema({
-  sender: { type: String, required: true },    // guest ID or user._id
-  receiver: { type: String, required: true },  // guest ID or user._id
-  content: { type: String, required: true },   // renamed from "text" for clarity
-  timestamp: { type: Date, default: Date.now } // default auto-time
+const MessageSchema = new mongoose.Schema({
+  sender: { type: String, required: true },    // user id / guest id
+  receiver: { type: String, required: true },  // user id / guest id
+  text: { type: String, required: true },
+  time: { type: Date, default: Date.now },
+  senderIsGuest: { type: Boolean, default: false } // optional tag
 });
 
-const Message = mongoose.model("Message", messageSchema);
-export default Message;
+export default mongoose.model('Message', MessageSchema);

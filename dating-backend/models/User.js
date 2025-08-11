@@ -1,24 +1,27 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  name: String,
-   id: String,
-    bio: String,
-  email: { type: String, unique: true },
-  password: String,
-  gender: String,
-  age: Number,
+  name: { type: String },
+  id: { type: String }, // you can remove if redundant
+  bio: { type: String },
+  email: { type: String, unique: true, sparse: true },
+  password: { type: String },
+  gender: { type: String },
+  age: { type: Number },
   images: [String],
-  location: String,
-  lastActive: Date,
+  location: { type: String },
+  lastActive: { type: Date },
   likedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  token: String,
+  token: { type: String },
   isAdmin: { type: Boolean, default: false },
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   passes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-});
 
-const User = mongoose.model('User', userSchema);
+  // Guest-specific fields
+  isGuest: { type: Boolean, default: false },
+  guestId: { type: String, unique: true, sparse: true } // store IDs like "guest_1754892702722"
+}, { timestamps: true });
 
-export default User;
+export default mongoose.model('User', userSchema);
+

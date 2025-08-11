@@ -42,4 +42,24 @@ console.log("Liked User ID:", req.params.userId);
   }
 };
 
+export const createGuestUser = async (req, res) => {
+  try {
+    const { guestId, guestName } = req.body;
 
+    let guest = await User.findOne({ username: guestId });
+
+    if (!guest) {
+      guest = new User({
+        username: guestId,
+        name: guestName || "Guest",
+        isGuest: true
+      });
+      await guest.save();
+    }
+
+    res.status(201).json(guest);
+  } catch (err) {
+    console.error("Error creating guest:", err);
+    res.status(500).json({ error: "Failed to create guest user" });
+  }
+};

@@ -1,5 +1,5 @@
 import express from 'express';
-import { discoverUsers, likeUser } from '../controllers/userController.js';
+import { discoverUsers, likeUser ,createGuestUser} from '../controllers/userController.js';
 import { protect } from '../middlewares/authMiddleware.js';
 
 import User from "../models/User.js";
@@ -10,6 +10,7 @@ router.get('/discover', protect, discoverUsers);
 router.post('/like/:userId', protect, likeUser);  // ✅ Keep only this for like
 router.get("/liked", protect);
 router.delete('/unmatch/:userId', protect);
+router.post("/guest", createGuestUser);
 router.post('/add-sample-users', async (req, res) => {
   try {
     const sampleUsers = req.body;
