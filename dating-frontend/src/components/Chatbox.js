@@ -1,4 +1,3 @@
-// src/components/ChatBox.js
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import socket from "../socket";
@@ -8,7 +7,6 @@ export default function ChatBox({ receiver, onNewMessage }) {
   const [messages, setMessages] = useState([]);
   const endRef = useRef();
 
-  // Get current user consistently — support both "user" (real) and guest keys
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = storedUser || {
     _id: localStorage.getItem("guestId"),
@@ -16,12 +14,12 @@ export default function ChatBox({ receiver, onNewMessage }) {
     isGuest: !storedUser,
   };
 
-  // utility: scroll to bottom
+  // Scroll to bottom on new messages
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // load messages on receiver change
+  // Load messages when receiver changes
   useEffect(() => {
     if (!receiver?._id || !currentUser?._id) {
       setMessages([]);
@@ -47,13 +45,9 @@ export default function ChatBox({ receiver, onNewMessage }) {
     };
 
     load();
-
-    // tell server we're online
     socket.emit("user-connected", currentUser._id);
 
-    // subscribe to live messages
     const handler = (msg) => {
-      // msg should be { sender, receiver, text, time }
       if (
         (msg.sender === receiver._id && msg.receiver === currentUser._id) ||
         (msg.sender === currentUser._id && msg.receiver === receiver._id)
@@ -67,9 +61,9 @@ export default function ChatBox({ receiver, onNewMessage }) {
     return () => {
       socket.off("receive-message", handler);
     };
-  }, [receiver?._id, currentUser._id]); // eslint-disable-line
+  }, [receiver, currentUser._id]); // track full receiver object
 
-  // send message
+  // Send a message
   const send = async () => {
     if (!text.trim() || !receiver?._id) return;
 
@@ -80,7 +74,6 @@ export default function ChatBox({ receiver, onNewMessage }) {
       timestamp: new Date().toISOString(),
     };
 
-    // guest -> save locally only (no DB)
     if (currentUser.isGuest) {
       const key = `chat-${currentUser._id}-${receiver._id}`;
       const local = JSON.parse(localStorage.getItem(key) || "[]");
@@ -88,49 +81,40 @@ export default function ChatBox({ receiver, onNewMessage }) {
       localStorage.setItem(key, JSON.stringify(local));
       setMessages(local);
     } else {
-      // logged-in user -> persist to backend
       try {
-        await axios.post("http://localhost:5000/api/messages", {
-          sender: msg.sender,
-          receiver: msg.receiver,
-          text: msg.text,
-          timestamp: msg.timestamp,
-        });
-        // append local UI
+        await axios.post("http://localhost:5000/api/messages", msg);
         setMessages((p) => [...p, msg]);
       } catch (err) {
-        console.error("Send message failed (API)", err);
-        // fallback show locally anyway
+        console.error("Send message failed", err);
         setMessages((p) => [...p, msg]);
       }
     }
 
-    // emit via socket for live delivery
-    socket.emit("send-message", {
-      sender: msg.sender,
-      receiver: msg.receiver,
-      text: msg.text,
-      timestamp: msg.timestamp,
-    });
-
+    socket.emit("send-message", msg);
     setText("");
   };
 
-  // UI
   return (
     <div className="card shadow" style={{ minHeight: 500 }}>
       <div className="card-body d-flex flex-column p-3">
         {/* Header */}
         <div className="d-flex align-items-center mb-3">
           <img
-            src={receiver?.images?.[0] || "https://via.placeholder.com/80"}
+            src={receiver?.images?.[0] || "https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg"}
             alt={receiver?.name || "User"}
             className="rounded-circle me-3"
-            style={{ width: 56, height: 56, objectFit: "cover", border: "2px solid #fff" }}
+            style={{
+              width: 56,
+              height: 56,
+              objectFit: "cover",
+              border: "2px solid #fff",
+            }}
           />
           <div>
             <h5 className="mb-0">{receiver?.name || "Unknown"}</h5>
-            <small className="text-muted">{receiver?.bio ? receiver.bio.slice(0, 45) : ""}</small>
+            <small className="text-muted">
+              {receiver?.bio ? receiver.bio.slice(0, 45) : ""}
+            </small>
           </div>
         </div>
 
@@ -149,15 +133,21 @@ export default function ChatBox({ receiver, onNewMessage }) {
             return (
               <div
                 key={i}
-                className={`d-flex mb-2 ${mine ? "justify-content-end" : "justify-content-start"}`}
+                className={`d-flex mb-2 ${
+                  mine ? "justify-content-end" : "justify-content-start"
+                }`}
               >
                 <div
-                  className={`p-2 rounded ${mine ? "bg-primary text-white" : "bg-white border"}`}
+                  className={`p-2 rounded ${
+                    mine ? "bg-primary text-white" : "bg-white border"
+                  }`}
                   style={{ maxWidth: "80%" }}
                 >
                   <div>{m.text}</div>
                   <div className="text-muted" style={{ fontSize: 12 }}>
-                    {new Date(m.time || m.timestamp || Date.now()).toLocaleTimeString([], {
+                    {new Date(
+                      m.time || m.timestamp || Date.now()
+                    ).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}

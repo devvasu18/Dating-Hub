@@ -52,7 +52,7 @@ export default function RecentChats({ onSelect, selectedId }) {
               typeof chat.partnerImg === "string"
                 ? chat.partnerImg
                 : chat.partner?.images?.[0] ||
-                  "https://via.placeholder.com/48",
+                  "https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg",
             lastMessage: chat.lastMessage
               ? String(chat.lastMessage.text || chat.lastMessage)
               : "",
@@ -105,7 +105,7 @@ export default function RecentChats({ onSelect, selectedId }) {
           <img
             src={
               it.partnerImg ||
-              "https://via.placeholder.com/48"
+              "https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg"
             }
             alt={it.partnerName}
             style={{

@@ -1,22 +1,27 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-function UserCard({ user }) {
+function UserCard({ user, onChat }) {
   const navigate = useNavigate();
 
   const handleChat = () => {
-    const guestId = localStorage.getItem("guestId");
-    const guestName = localStorage.getItem("guestName");
+    if (onChat) {
+      onChat();
+    } else {
+      // fallback: default navigation
+      const guestId = localStorage.getItem("guestId");
+      const guestName = localStorage.getItem("guestName");
 
-    navigate(`/chat/${user._id}`, {
-      state: {
-        user, // receiver
-        guest: {
-          id: guestId,
-          name: guestName,
+      navigate(`/chat/${user._id}`, {
+        state: {
+          user, // receiver
+          guest: {
+            id: guestId,
+            name: guestName,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   return (
@@ -77,4 +82,3 @@ function UserCard({ user }) {
 }
 
 export default UserCard;
-
