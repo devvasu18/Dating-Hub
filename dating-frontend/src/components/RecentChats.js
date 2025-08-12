@@ -11,13 +11,14 @@ export default function RecentChats({ onSelect, selectedId }) {
     isGuest: !storedUser,
   };
 
-  const [items, setItems] = useState([]); // { partnerId, partnerName, partnerImg, lastMessage, unreadCount }
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     const load = async () => {
       if (!currentUser._id) return;
+
       if (currentUser.isGuest) {
-        // scan localStorage keys for chat-guestId-*
+        // For guests, read chats from localStorage
         const prefix = `chat-${currentUser._id}-`;
         const keys = Object.keys(localStorage).filter((k) => k.startsWith(prefix));
         const list = keys.map((k) => {
@@ -34,12 +35,33 @@ export default function RecentChats({ onSelect, selectedId }) {
         });
         setItems(list);
       } else {
-        // logged-in: call server endpoint that returns recent chats for this user.
+        // For logged-in users, call server endpoint
         try {
-          const res = await axios.get(`http://localhost:5000/api/chats/recent/${currentUser._id}`);
-          setItems(res.data || []);
+          const res = await axios.get(
+            `http://localhost:5000/api/chats/recent/${currentUser._id}`
+          );
+
+          // FIX: Ensure all fields are strings and extracted correctly
+          const list = (res.data || []).map((chat) => ({
+            partnerId: chat.partnerId || chat.partner?._id,
+            partnerName:
+              typeof chat.partnerName === "string"
+                ? chat.partnerName
+                : chat.partner?.name || "Unknown",
+            partnerImg:
+              typeof chat.partnerImg === "string"
+                ? chat.partnerImg
+                : chat.partner?.images?.[0] ||
+                  "https://via.placeholder.com/48",
+            lastMessage: chat.lastMessage
+              ? String(chat.lastMessage.text || chat.lastMessage)
+              : "",
+            unreadCount: chat.unreadCount || 0,
+          }));
+
+          setItems(list);
         } catch (err) {
-          console.warn("Failed to load recent chats (backend may not implement the endpoint)", err);
+          console.warn("Failed to load recent chats", err);
           setItems([]);
         }
       }
@@ -47,12 +69,10 @@ export default function RecentChats({ onSelect, selectedId }) {
 
     load();
 
-    // listen for new incoming messages via socket and refresh small
+    // Listen for new messages
     const handler = (msg) => {
       if (!msg) return;
-      // If message involves current user, refresh recent list or update locally
       if (msg.receiver === currentUser._id || msg.sender === currentUser._id) {
-        // naive: reload
         setTimeout(() => load(), 200);
       }
     };
@@ -83,22 +103,31 @@ export default function RecentChats({ onSelect, selectedId }) {
           onClick={() => onSelect(it)}
         >
           <img
-            src={it.partnerImg || "https://via.placeholder.com/48"}
+            src={
+              it.partnerImg ||
+              "https://via.placeholder.com/48"
+            }
             alt={it.partnerName}
-            style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 8 }}
+            style={{
+              width: 48,
+              height: 48,
+              objectFit: "cover",
+              borderRadius: 8,
+            }}
             className="me-3"
           />
           <div className="flex-grow-1 text-start">
             <div className="d-flex justify-content-between">
               <strong>{it.partnerName}</strong>
               {it.unreadCount > 0 && (
-                <span className="badge bg-danger ms-2">{it.unreadCount}</span>
+                <span className="badge bg-danger ms-2">
+                  {it.unreadCount}
+                </span>
               )}
             </div>
             <div className="text-muted" style={{ fontSize: 13 }}>
-  {(it.lastMessage || "").toString().slice(0, 40)}
-</div>
-
+              {(it.lastMessage || "").slice(0, 40)}
+            </div>
           </div>
         </button>
       ))}
