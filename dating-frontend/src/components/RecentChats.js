@@ -96,8 +96,9 @@ export default function RecentChats({ onSelect, selectedId }) {
               )}
             </div>
             <div className="text-muted" style={{ fontSize: 13 }}>
-              {it.lastMessage?.slice(0, 40)}
-            </div>
+  {(it.lastMessage || "").toString().slice(0, 40)}
+</div>
+
           </div>
         </button>
       ))}

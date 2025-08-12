@@ -13,6 +13,7 @@ import fixuser from "./routes/fix-user.js";
 import Message from './models/Message.js';
 import authRoutes from './routes/authRoutes.js'; 
 import userRoutes from './routes/userRoutes.js';
+import chatRoutes from "./routes/chatRoutes.js";
 
 dotenv.config();
 
@@ -37,7 +38,7 @@ app.use('/api/auth', authRoutes);
 app.use("/api/users", userRoutes);
 app.use('/api', userRoutes);
 app.use("/api/admin", fixuser);
-
+app.use("/api/chats", chatRoutes);
 // Track connected users
 const onlineUsers = new Map();
 
