@@ -50,7 +50,9 @@ function App() {
               <ProtectedRoute><Match /></ProtectedRoute>
             } />
            <Route path="/chat/:receiverId" element={<ChatPage />} />
-
+            <Route path="/chat" element={
+             <ChatPage />
+            } />
             <Route path="/profile/:id" element={
               <ProtectedRoute><UserProfile /></ProtectedRoute>
             } />
