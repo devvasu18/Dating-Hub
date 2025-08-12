@@ -121,7 +121,12 @@ export default function ChatBox({ receiver, onNewMessage }) {
         {/* Messages */}
         <div
           className="flex-grow-1 mb-3 p-3 rounded"
-          style={{ overflowY: "auto", background: "#f6f8fb" }}
+         style={{
+    overflowY: "auto",
+    background: "#f6f8fb",
+    height: "400px",          // ✅ fixed height
+    maxHeight: "60vh"         // ✅ or make it responsive
+  }}
         >
           {messages.length === 0 && (
             <div className="text-center text-muted mt-5">

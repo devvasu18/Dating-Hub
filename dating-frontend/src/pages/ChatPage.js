@@ -61,7 +61,7 @@ export default function ChatsPage() {
       <div className="row g-3">
         {/* Recent Chats List */}
         <div className="col-md-4">
-          <div className="card shadow-sm" style={{ minHeight: 520 }}>
+          <div className="card shadow-sm" style={{ minHeight: 570 }}>
             <div className="card-body">
               <h5>Recent</h5>
               <RecentChats onSelect={handleSelect} selectedId={active?.partnerId} />
