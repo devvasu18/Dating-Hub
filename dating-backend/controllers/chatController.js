@@ -1,6 +1,5 @@
-// backend/controllers/chatController.js
-import Message from '../models/Message.js';
-import User from '../models/User.js'; // adjust path if needed
+import Message from "../models/Message.js";
+import User from "../models/User.js";
 import mongoose from "mongoose";
 
 /**
@@ -24,15 +23,14 @@ export const getRecentChats = async (req, res) => {
           sender: 1,
           receiver: 1,
           text: 1,
-          time: 1,
+          timestamp: 1,
           read: 1,
-          senderIsGuest: 1,
           partner: {
             $cond: [{ $eq: ["$sender", userId] }, "$receiver", "$sender"],
           },
         },
       },
-      { $sort: { time: -1 } },
+      { $sort: { timestamp: -1 } },
       {
         $group: {
           _id: "$partner",
@@ -53,33 +51,29 @@ export const getRecentChats = async (req, res) => {
           partnerId: "$_id",
           lastMessage: {
             text: "$lastMessage.text",
-            time: "$lastMessage.time",
+            timestamp: "$lastMessage.timestamp",
             sender: "$lastMessage.sender",
             receiver: "$lastMessage.receiver",
-            senderIsGuest: "$lastMessage.senderIsGuest",
           },
           unreadCount: 1,
         },
       },
-      { $sort: { "lastMessage.time": -1 } },
+      { $sort: { "lastMessage.timestamp": -1 } },
     ];
 
     const results = await Message.aggregate(pipeline).allowDiskUse(true);
 
-    // Filter only valid Mongo ObjectIds
+    // Get partner user info
     const partnerIds = results
       .map((r) => r.partnerId)
       .filter((id) => mongoose.Types.ObjectId.isValid(id));
-
     const users = await User.find({ _id: { $in: partnerIds } }).select("_id name images");
-
     const usersMap = new Map();
     users.forEach((u) => usersMap.set(u._id.toString(), u));
 
     const final = results.map((r) => {
       const pid = r.partnerId;
-      const partner =
-        usersMap.get(pid) || { _id: pid, name: "Guest User", images: [] };
+      const partner = usersMap.get(pid) || { _id: pid, name: "Guest User", images: [] };
       return {
         partnerId: pid,
         partner,
@@ -103,16 +97,15 @@ export const getRecentChats = async (req, res) => {
 export const markRead = async (req, res) => {
   try {
     const { userId, partnerId } = req.body;
-    if (!userId || !partnerId) return res.status(400).json({ error: 'userId and partnerId required' });
-
-    const result = await Message.updateMany(
-      { sender: partnerId, receiver: userId, read: false },
+    if (!userId || !partnerId) {
+      return res.status(400).json({ error: "Missing userId or partnerId" });
+    }
+    await Message.updateMany(
+      { sender: partnerId, receiver: userId, read: { $ne: true } },
       { $set: { read: true } }
     );
-
-    res.json({ ok: true, modifiedCount: result.modifiedCount || result.nModified || 0 });
+    res.json({ success: true });
   } catch (err) {
-    console.error('Error marking messages read:', err);
-    res.status(500).json({ error: 'Error marking messages read' });
+    res.status(500).json({ error: "Failed to mark messages as read" });
   }
 };

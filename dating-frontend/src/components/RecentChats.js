@@ -1,9 +1,8 @@
-// src/components/RecentChats.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import socket from "../socket";
 
-export default function RecentChats({ onSelect, selectedId }) {
+export default function RecentChats({ onSelect, selectedId, justReadId, reload = 0 }) {
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
   const currentUser = storedUser || {
     _id: localStorage.getItem("guestId"),
@@ -41,7 +40,6 @@ export default function RecentChats({ onSelect, selectedId }) {
             `http://localhost:5000/api/chats/recent/${currentUser._id}`
           );
 
-          // FIX: Ensure all fields are strings and extracted correctly
           const list = (res.data || []).map((chat) => ({
             partnerId: chat.partnerId || chat.partner?._id,
             partnerName:
@@ -83,7 +81,7 @@ export default function RecentChats({ onSelect, selectedId }) {
       socket.off("receive-message", handler);
       socket.off("send-message", handler);
     };
-  }, [currentUser._id]);
+  }, [currentUser._id, reload]);
 
   if (items.length === 0)
     return (
@@ -94,43 +92,46 @@ export default function RecentChats({ onSelect, selectedId }) {
 
   return (
     <div className="list-group list-group-flush">
-      {items.map((it) => (
-        <button
-          key={it.partnerId}
-          className={`list-group-item list-group-item-action d-flex align-items-center ${
-            selectedId === it.partnerId ? "active" : ""
-          }`}
-          onClick={() => onSelect(it)}
-        >
-          <img
-            src={
-              it.partnerImg ||
-              "https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg"
-            }
-            alt={it.partnerName}
-            style={{
-              width: 48,
-              height: 48,
-              objectFit: "cover",
-              borderRadius: 8,
-            }}
-            className="me-3"
-          />
-          <div className="flex-grow-1 text-start">
-            <div className="d-flex justify-content-between">
-              <strong>{it.partnerName}</strong>
-              {it.unreadCount > 0 && (
-                <span className="badge bg-danger ms-2">
-                  {it.unreadCount}
-                </span>
-              )}
+      {items.map((it) => {
+        // Show badge only if unreadCount > 0 (from backend)
+        return (
+          <button
+            key={it.partnerId}
+            className={`list-group-item list-group-item-action d-flex align-items-center ${
+              selectedId === it.partnerId ? "active" : ""
+            }`}
+            onClick={() => onSelect(it)}
+          >
+            <img
+              src={
+                it.partnerImg ||
+                "https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg"
+              }
+              alt={it.partnerName}
+              style={{
+                width: 48,
+                height: 48,
+                objectFit: "cover",
+                borderRadius: 8,
+              }}
+              className="me-3"
+            />
+            <div className="flex-grow-1 text-start">
+              <div className="d-flex justify-content-between">
+                <strong>{it.partnerName}</strong>
+                {it.unreadCount > 0 && (
+                  <span className="badge bg-danger ms-2">
+                    {it.unreadCount}
+                  </span>
+                )}
+              </div>
+              <div className="text-muted" style={{ fontSize: 13 }}>
+                {(it.lastMessage || "").slice(0, 40)}
+              </div>
             </div>
-            <div className="text-muted" style={{ fontSize: 13 }}>
-              {(it.lastMessage || "").slice(0, 40)}
-            </div>
-          </div>
-        </button>
-      ))}
+          </button>
+        );
+      })}
     </div>
   );
 }

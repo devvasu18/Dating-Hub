@@ -5,22 +5,20 @@ import ChatBox from "../components/Chatbox";
 
 export default function ChatsPage() {
   const [active, setActive] = useState(null);
+  const [justReadId, setJustReadId] = useState(null);
+  const [reloadChats, setReloadChats] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
 
-  // Set active chat if navigated from Discover (with state) or via /chat/:id
   useEffect(() => {
-    // If navigated with state (from Discover)
     if (location.state && location.state.user) {
       setActive({
         partnerId: location.state.user._id,
         partner: location.state.user,
       });
-    }
-    // If navigated directly to /chat/:id (refresh or manual)
-    else if (params.id) {
-      // Fetch user details from backend
+      setJustReadId(location.state.user._id);
+    } else if (params.id) {
       fetch(`http://localhost:5000/api/users/${params.id}`)
         .then((res) => res.json())
         .then((data) => {
@@ -28,12 +26,32 @@ export default function ChatsPage() {
             partnerId: data._id,
             partner: data,
           });
+          setJustReadId(data._id);
         })
         .catch(() => setActive(null));
     }
   }, [location.state, params.id]);
 
   const handleSelect = async (item) => {
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+    const currentUser = storedUser || {
+      _id: localStorage.getItem("guestId"),
+      name: localStorage.getItem("guestName") || "Guest",
+      isGuest: !storedUser,
+    };
+
+    if (!currentUser.isGuest) {
+      await fetch("http://localhost:5000/api/messages/mark-read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: currentUser._id,
+          partnerId: item.partnerId,
+        }),
+      });
+      setReloadChats((c) => c + 1); // Trigger reload of RecentChats
+    }
+
     setActive({
       partnerId: item.partnerId,
       partner: {
@@ -42,6 +60,7 @@ export default function ChatsPage() {
         images: item.partnerImg ? [item.partnerImg] : [],
       },
     });
+    setJustReadId(item.partnerId);
 
     try {
       const res = await fetch(`http://localhost:5000/api/users/${item.partnerId}`);
@@ -59,17 +78,19 @@ export default function ChatsPage() {
   return (
     <div className="container py-4">
       <div className="row g-3">
-        {/* Recent Chats List */}
         <div className="col-md-4">
           <div className="card shadow-sm" style={{ minHeight: 570 }}>
             <div className="card-body">
               <h5>Recent</h5>
-              <RecentChats onSelect={handleSelect} selectedId={active?.partnerId} />
+              <RecentChats
+                onSelect={handleSelect}
+                selectedId={active?.partnerId}
+                justReadId={justReadId}
+                reload={reloadChats}
+              />
             </div>
           </div>
         </div>
-
-        {/* Chat Area */}
         <div className="col-md-8">
           {active ? (
             <ChatBox receiver={active.partner} onNewMessage={() => {}} />
