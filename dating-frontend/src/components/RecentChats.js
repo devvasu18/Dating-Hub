@@ -26,17 +26,20 @@ export default function RecentChats({ onSelect, selectedId, justReadId, reload =
     const last = arr[arr.length - 1];
     // If guest is sender, show receiverName; if guest is receiver, show senderName
     let partnerName = partnerId;
+    let partnerImg = null;
     if (last) {
       if (last.sender === currentUser._id && last.receiverName) {
         partnerName = last.receiverName;
+         partnerImg = last.receiverImg || null;
       } else if (last.receiver === currentUser._id && last.senderName) {
         partnerName = last.senderName;
+         partnerImg = last.senderImg || null;
       }
     }
     return {
       partnerId,
       partnerName,
-      partnerImg: null,
+       partnerImg: partnerImg || "https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg",
       lastMessage: last?.text || "",
       unreadCount: 0,
     };

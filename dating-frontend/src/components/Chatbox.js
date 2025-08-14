@@ -73,6 +73,7 @@ export default function ChatBox({ receiver, onNewMessage }) {
       senderName: currentUser.name,
       receiverName: receiver.name,
       receiver: receiver._id,
+      receiverImg: receiver.images?.[0] || null,
       text: text.trim(),
       timestamp: new Date().toISOString(),
     };
