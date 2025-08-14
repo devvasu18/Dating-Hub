@@ -10,7 +10,6 @@ import Match from "./pages/Match";
 import UserProfile from "./pages/UserProfile";
 import ChatPage from "./pages/ChatPage";
 import EditProfile from "./pages/EditProfile";
-import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProfilePage from "./pages/ProfilePage";
 import PopupModal from "./components/PopupModal";
@@ -64,7 +63,6 @@ function App() {
           </Routes>
           
         </div>
-        <Footer />
       </Router>
     </div>
     </div>

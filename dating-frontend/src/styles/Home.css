@@ -7,13 +7,14 @@ html, body, #root {
   overflow-x: hidden;
   overflow-y: auto;
   font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #f8d8ff, #d8e9ff);
 }
 
 .app-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* full viewport height */
-  background-color: rgba(255, 192, 203, 0.603);
+  min-height: auto; /* full viewport height */
+
 }
 
 .main-content {
