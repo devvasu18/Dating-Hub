@@ -70,6 +70,8 @@ export default function ChatBox({ receiver, onNewMessage }) {
 
     const msg = {
       sender: currentUser._id,
+      senderName: currentUser.name,
+      receiverName: receiver.name,
       receiver: receiver._id,
       text: text.trim(),
       timestamp: new Date().toISOString(),

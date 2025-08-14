@@ -17,23 +17,32 @@ export default function RecentChats({ onSelect, selectedId, justReadId, reload =
     const load = async () => {
       if (!currentUser._id) return;
 
-      if (currentUser.isGuest) {
-        const prefix = `chat-${currentUser._id}-`;
-        const keys = Object.keys(localStorage).filter((k) => k.startsWith(prefix));
-        const list = keys.map((k) => {
-          const partnerId = k.replace(prefix, "");
-          const arr = JSON.parse(localStorage.getItem(k) || "[]");
-          const last = arr[arr.length - 1];
-          return {
-            partnerId,
-            partnerName: last?.receiverName || partnerId,
-            partnerImg: null,
-            lastMessage: last?.text || "",
-            unreadCount: 0,
-          };
-        });
-        setItems(list);
-      } else {
+   if (currentUser.isGuest) {
+  const prefix = `chat-${currentUser._id}-`;
+  const keys = Object.keys(localStorage).filter((k) => k.startsWith(prefix));
+  const list = keys.map((k) => {
+    const partnerId = k.replace(prefix, "");
+    const arr = JSON.parse(localStorage.getItem(k) || "[]");
+    const last = arr[arr.length - 1];
+    // If guest is sender, show receiverName; if guest is receiver, show senderName
+    let partnerName = partnerId;
+    if (last) {
+      if (last.sender === currentUser._id && last.receiverName) {
+        partnerName = last.receiverName;
+      } else if (last.receiver === currentUser._id && last.senderName) {
+        partnerName = last.senderName;
+      }
+    }
+    return {
+      partnerId,
+      partnerName,
+      partnerImg: null,
+      lastMessage: last?.text || "",
+      unreadCount: 0,
+    };
+  });
+  setItems(list);
+} else {
         try {
           const res = await axios.get(
             `http://localhost:5000/api/chats/recent/${currentUser._id}`
