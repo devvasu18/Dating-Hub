@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Toast, ToastContainer } from 'react-bootstrap';
 import { motion } from "framer-motion";
 import axios from "axios";
+import "../styles/Discover.css";
 
 
 function Discover() {

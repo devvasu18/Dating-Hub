@@ -12,7 +12,8 @@ html, body, #root {
 .app-wrapper {
   display: flex;
   flex-direction: column;
-  height: auto;
+  min-height: 100vh; /* full viewport height */
+  background-color: rgba(255, 192, 203, 0.603);
 }
 
 .main-content {

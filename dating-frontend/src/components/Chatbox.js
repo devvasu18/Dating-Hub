@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import socket from "../socket";
+import "../styles/ChatPage.css"; // Assuming you have some styles for the chatbox
 
 export default function ChatBox({ receiver, onNewMessage }) {
   const [text, setText] = useState("");
@@ -144,7 +145,7 @@ export default function ChatBox({ receiver, onNewMessage }) {
               >
                 <div
                   className={`p-2 rounded ${
-                    mine ? "bg-primary text-white" : "bg-white border"
+                    mine ? "messagebckcolor text-white" : "recivermessagebckcolor border"
                   }`}
                   style={{ maxWidth: "80%" }}
                 >
@@ -175,7 +176,7 @@ export default function ChatBox({ receiver, onNewMessage }) {
               if (e.key === "Enter") send();
             }}
           />
-          <button className="btn btn-success" onClick={send}>
+          <button className="btn sendcolor" onClick={send}>
             Send
           </button>
         </div>

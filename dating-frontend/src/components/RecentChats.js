@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import socket from "../socket";
+import "../styles/ChatPage.css";
 
 export default function RecentChats({ onSelect, selectedId, justReadId, reload = 0 }) {
   const storedUser = JSON.parse(localStorage.getItem("user") || "null");
@@ -17,7 +18,6 @@ export default function RecentChats({ onSelect, selectedId, justReadId, reload =
       if (!currentUser._id) return;
 
       if (currentUser.isGuest) {
-        // For guests, read chats from localStorage
         const prefix = `chat-${currentUser._id}-`;
         const keys = Object.keys(localStorage).filter((k) => k.startsWith(prefix));
         const list = keys.map((k) => {
@@ -34,7 +34,6 @@ export default function RecentChats({ onSelect, selectedId, justReadId, reload =
         });
         setItems(list);
       } else {
-        // For logged-in users, call server endpoint
         try {
           const res = await axios.get(
             `http://localhost:5000/api/chats/recent/${currentUser._id}`
@@ -67,7 +66,6 @@ export default function RecentChats({ onSelect, selectedId, justReadId, reload =
 
     load();
 
-    // Listen for new messages
     const handler = (msg) => {
       if (!msg) return;
       if (msg.receiver === currentUser._id || msg.sender === currentUser._id) {
@@ -85,21 +83,18 @@ export default function RecentChats({ onSelect, selectedId, justReadId, reload =
 
   if (items.length === 0)
     return (
-      <div className="p-3 text-center text-muted">
+      <div className="no-chats">
         <p>No recent chats</p>
       </div>
     );
 
   return (
-    <div className="list-group list-group-flush">
+    <div className="chat-list">
       {items.map((it) => {
-        // Show badge only if unreadCount > 0 (from backend)
         return (
           <button
             key={it.partnerId}
-            className={`list-group-item list-group-item-action d-flex align-items-center ${
-              selectedId === it.partnerId ? "active" : ""
-            }`}
+            className={`chat-item ${selectedId === it.partnerId ? "active" : ""}`}
             onClick={() => onSelect(it)}
           >
             <img
@@ -108,26 +103,16 @@ export default function RecentChats({ onSelect, selectedId, justReadId, reload =
                 "https://img.freepik.com/premium-vector/social-media-logo_1305298-29989.jpg"
               }
               alt={it.partnerName}
-              style={{
-                width: 48,
-                height: 48,
-                objectFit: "cover",
-                borderRadius: 8,
-              }}
-              className="me-3"
+              className="chat-avatar"
             />
-            <div className="flex-grow-1 text-start">
-              <div className="d-flex justify-content-between">
-                <strong>{it.partnerName}</strong>
+            <div className="chat-info">
+              <div className="chat-header">
+                <strong className="chat-name">{it.partnerName}</strong>
                 {it.unreadCount > 0 && (
-                  <span className="badge bg-danger ms-2">
-                    {it.unreadCount}
-                  </span>
+                  <span className="chat-badge">{it.unreadCount}</span>
                 )}
               </div>
-              <div className="text-muted" style={{ fontSize: 13 }}>
-                {(it.lastMessage || "").slice(0, 40)}
-              </div>
+              <div className="chat-last">{(it.lastMessage || "").slice(0, 40)}</div>
             </div>
           </button>
         );

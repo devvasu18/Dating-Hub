@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import RecentChats from "../components/RecentChats";
 import ChatBox from "../components/Chatbox";
+import "../styles/ChatPage.css";
 
 export default function ChatsPage() {
   const [active, setActive] = useState(null);
@@ -49,7 +50,7 @@ export default function ChatsPage() {
           partnerId: item.partnerId,
         }),
       });
-      setReloadChats((c) => c + 1); // Trigger reload of RecentChats
+      setReloadChats((c) => c + 1);
     }
 
     setActive({
@@ -76,30 +77,30 @@ export default function ChatsPage() {
   };
 
   return (
-    <div className="container py-4">
-      <div className="row g-3">
-        <div className="col-md-4">
-          <div className="card shadow-sm" style={{ minHeight: 570 }}>
-            <div className="card-body">
-              <h5>Recent</h5>
-              <RecentChats
-                onSelect={handleSelect}
-                selectedId={active?.partnerId}
-                justReadId={justReadId}
-                reload={reloadChats}
-              />
-            </div>
+    <div className="chat-page">
+      <div className="chat-layout">
+        <div className="chat-sidebar">
+          <div className="sidebar-card">
+            <h5 className="sidebar-title">Recent</h5>
+            <RecentChats
+              onSelect={handleSelect}
+              selectedId={active?.partnerId}
+              justReadId={justReadId}
+              reload={reloadChats}
+            />
           </div>
         </div>
-        <div className="col-md-8">
+        <div className="chat-main">
           {active ? (
             <ChatBox receiver={active.partner} onNewMessage={() => {}} />
           ) : (
-            <div className="card shadow p-5 text-center" style={{ minHeight: 520 }}>
+            <div className="empty-chat-card">
               <h4>No chat selected</h4>
-              <p className="text-muted">Start a conversation with someone new.</p>
+              <p className="empty-chat-subtitle">
+                Start a conversation with someone new.
+              </p>
               <button
-                className="btn btn-primary"
+                className="start-chat-btn"
                 onClick={() => navigate("/discover")}
               >
                 Start Chatting

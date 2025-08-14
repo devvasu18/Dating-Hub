@@ -29,15 +29,15 @@ function Navbar() {
 
 
   return (
-    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#fa4768fb" }}>
+    <nav className="navbar navbar-expand-lg" style={{ background: "linear-gradient(135deg, #9b2b45ff, #f56a8aff)" }}>
       <div className="container-fluid">
         <div className="d-flex align-items-center">
-          <img
+         {/* <img
             src="/ChatGPT Image Jul 29, 2025, 01_50_54 pM.png"
             alt="DateHub"
             height="60"
             width={140}
-          />
+          /> */}
         </div>
 
         <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
